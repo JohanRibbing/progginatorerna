@@ -10,3 +10,9 @@ class Spline:
     def display(self):
         return self.d
     
+#Vad vi behöver
+#init: tuple/lista med tuples (d)
+#plot: plotta olika s(u) (Johan)
+#call - rekursiv funktion (tar in ett givet u - ger en coordinat som en tuple (x,y))
+#hot interval och välj d-punkter (tar in u och(genom att hitta två tabelltider) ger en lista med fyra d-tupl (hot interval)
+#alpha(u) tar in två hållplatser och u och ger en siffra (Seamus)
