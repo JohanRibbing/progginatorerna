@@ -1,4 +1,5 @@
 from spline import Spline
 
-s = Spline()
-print(s)
+d = 2, 3, 4, 5
+s = Spline(d)
+print(s.display())

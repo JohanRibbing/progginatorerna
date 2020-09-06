@@ -1,4 +1,8 @@
-Class Spline
-    def testfunc(x):
-        return 2*x
+Class Spline:
+
+    def __init__(self, d):
+        self.d = d
+
+    def display(self):
+        return self.d
     
