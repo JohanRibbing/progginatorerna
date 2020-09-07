@@ -1,21 +1,27 @@
-class Spline
+class Spline:
     
     def __init__(self, us, ds):
         self.us = us
         self.ds = ds
 
-    def plot():
+    def plot(self):
         return
 
-    def call(u):
+    def call(self, u):
         return
         #return (x,y)
 
-    def hot_index(u):
-        return
-        #return index
+    def hot_index(self, u):
+        """
+        From a given u find the hot index, meaning the surrounding u indexes.
+        :param u: given u
+        :return: indexes
+        """
 
-    def alpha(u, n, k)
+
+        return
+
+    def alpha(self, u, n, k):
         return 
         #return alpha
 
