@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 import matplotlib.pyplot as plt
 import numpy as np
->>>>>>> plottinator
 
 class Spline:
     
@@ -44,6 +42,3 @@ class Spline:
     def alpha(self, u, n, k):
         return 
         #return alpha
-<<<<<<< HEAD
-
->>>>>>> plottinator
