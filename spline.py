@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy
 
 class Spline:
-    
+
     def __init__(self, us, ds):
         self.us = us
         self.ds = ds
@@ -40,5 +41,7 @@ class Spline:
                 return i, gp
 
     def alpha(self, u, n, k):
-        return 
+        u_leftmost = self.us[k-1]
+        u_rightmost = self.us[k+3-n]
+        return ((u_rightmost-u)/(u_rightmost-u_leftmost))
         #return alpha
