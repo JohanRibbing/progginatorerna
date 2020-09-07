@@ -42,12 +42,3 @@ class Spline:
     def alpha(self, u, n, k):
         return 
         #return alpha
-
-print(111)
-us = np.linspace(0,1,4)
-ds = [(0,0), (1,0), (1,1), (0,1)]
-
-larry = Spline(us, ds)
-print(222)
-larry.plot()
-print(333)
