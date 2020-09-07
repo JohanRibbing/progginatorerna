@@ -1,3 +1,5 @@
+import numpy
+
 class Spline:
     
     def __init__(self, us, ds):
@@ -13,18 +15,15 @@ class Spline:
 
     def hot_index(self, u):
         """
-        From a given u find the hot index, meaning the surrounding u indexes.
+        From a given u find the hot index.
         :param u: given u
-        :return: indexes
+        :return: index
         """
-
-
-        return
+        for i, gp in enumerate(self.us):
+            if gp > u:
+                return i, gp
 
     def alpha(self, u, n, k):
         return 
         #return alpha
 
-
-
- 
