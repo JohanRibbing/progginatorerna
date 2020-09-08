@@ -10,15 +10,17 @@ class Spline:
 
     #antar att self.us är sorterad stigande och att ds är sorterad för att passa us
     def plot(self):
+        us_no_extra = self.us[2:-3]
+
         dx, dy = zip(*self.ds)
         plt.plot(dx, dy, 'r--')
         plt.plot(dx, dy, 'ro')
 
-        ss = [self(u) for u in self.us]
+        ss = [self(u) for u in us_no_extra]
         ssx, ssy = zip(*ss)
         plt.plot(ssx, ssy, 'b+')
 
-        u_interval = np.linspace(self.us[0], self.us[-1], 100).tolist()
+        u_interval = np.linspace(us_no_extra[0], us_no_extra[-1], 100).tolist()
         s_interval = [self(u) for u in u_interval]
         s_interval_x, s_interval_y = zip(*s_interval)
         plt.plot(s_interval_x, s_interval_y, 'b-')
@@ -31,7 +33,6 @@ class Spline:
         elif n >= 1:
             return self.alpha(n, k, u) * self.d(n-1, k-1, u) + (1-self.alpha(n, k, u)) * self.d(n-1, k, u)
 
-    #need to figure out endpoints, multiplicity and index out of bounds
     def __call__(self, u):
         index = self.hot_index(u)
         return self.d(3, index, u)
@@ -50,20 +51,6 @@ class Spline:
         u_leftmost = self.us[k-1]
         u_rightmost = self.us[k+3-n]
         return ((u_rightmost-u)/(u_rightmost-u_leftmost))
-
-
-
-
-
-
-
-
-
-us = np.linspace(0,1,8)
-ds = [[0,0], [0,0], [0,0], [1,0], [1,1], [0,1], [0,1], [0,1]]
-ds = [np.array(d) for d in ds]
-larry = Spline(us, ds)
-larry.plot()
 
 
 
