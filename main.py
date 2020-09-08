@@ -1,8 +1,7 @@
-from spline import Spline
-from scipy import *
 from matplotlib.pyplot import *
-import numpy
+import numpy as np
 import csv
+from spline import Spline
 
 def read_Data(filename):
     d_s = []
@@ -17,12 +16,21 @@ def read_Data(filename):
                 row_count += 1
     return d_s
 
-ds = numpy.array(read_Data('Data.csv'))
-print(ds)
+ds1 = np.array(read_Data('Data.csv'))
 #us = numpy.linspace(0,1,5)
 #s = Spline(ds,us)
 
+ds2 = np.genfromtxt("control.csv", dtype=float, delimiter=",")
+us = np.linspace(0, 1, 26)
+us[ 1] = us[ 2] = us[ 0]
+us[-3] = us[-2] = us[-1]
+print(us)
+
+siv = Spline(us, ds2)
+print(siv(0.2))
+siv.plot()
 #Något som läser in d:na från fil (tar in filnamn som string och returnerar en lista med tuples)
+
 #Instansierar splinen med listan med tuples
 #kallar på plotfunktionen
 #Seamus
