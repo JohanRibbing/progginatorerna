@@ -51,7 +51,31 @@ class Spline:
         u_leftmost = self.us[k-1]
         u_rightmost = self.us[k+3-n]
         return ((u_rightmost-u)/(u_rightmost-u_leftmost))
+        #return alpha
 
+    def create_basis_func(self, j, layer=3):
+        """
+        Creates basis function with index j.
+        :param j:
+        :param layer: number of layers left of the recursive algorithm.
+        :return: Python function representing the basis function.
+        """
+        if layer == 0:
+            def basis(u):
+                if self.us[j - 1] <= u < self.us[j]:
+                    return 1
+                else:
+                    return 0
+            return basis
+        else:
+            def basis(u):
+                # calculate basis function with recursive algorithm until we reach layer 0.
+                # Expression 1 in the recursive algorithm:
+                first_quota = (u - self.us[j - 1]) / (self.us[j + layer - 1] - self.us[j - 1])
+                b_func1 = self.create_basis_func(j, layer - 1)
 
-
-
+                # Expression 2 in the recursive algorithm:
+                second_quota = (self.us[j + layer] - u) / (self.us[j + layer] - self.us[j])
+                b_func2 = self.create_basis_func(j + 1, layer - 1)
+                return first_quota * b_func1(u) + second_quota * b_func2(u)
+            return basis
