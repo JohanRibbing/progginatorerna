@@ -10,7 +10,16 @@ class Spline:
 
     #antar att self.us är sorterad stigande och att ds är sorterad för att passa us
     def plot(self):
-        us_no_extra = self.us[2:-3]
+        print("us: ", self.us)
+
+
+        us_no_extra = self.us[2:-2]
+        print("us_no_extra: ", us_no_extra)
+
+
+        u_interval = np.linspace(us_no_extra[0], us_no_extra[-1], 100).tolist()
+        print("u_interval: ", u_interval)
+
 
         dx, dy = zip(*self.ds)
         plt.plot(dx, dy, 'r--')
@@ -20,7 +29,6 @@ class Spline:
         ssx, ssy = zip(*ss)
         plt.plot(ssx, ssy, 'b+')
 
-        u_interval = np.linspace(us_no_extra[0], us_no_extra[-1], 100).tolist()
         s_interval = [self(u) for u in u_interval]
         s_interval_x, s_interval_y = zip(*s_interval)
         plt.plot(s_interval_x, s_interval_y, 'b-')
@@ -46,6 +54,7 @@ class Spline:
         for i, gp in enumerate(self.us):
             if gp > u:
                 return i
+        return len(self.us) - 3
 
     def alpha(self, n, k, u):
         u_leftmost = self.us[k-1]
