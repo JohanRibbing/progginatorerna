@@ -10,7 +10,7 @@ class Spline:
 
     #antar att self.us är sorterad stigande och att ds är sorterad för att passa us
     def plot(self):
-        dx, dy = zip(*ds)
+        dx, dy = zip(*self.ds)
         plt.plot(dx, dy, 'r--')
         plt.plot(dx, dy, 'ro')
 
@@ -18,7 +18,7 @@ class Spline:
         ssx, ssy = zip(*ss)
         plt.plot(ssx, ssy, 'b+')
 
-        u_interval = np.linspace(us[0], us[-1], 100).tolist()
+        u_interval = np.linspace(self.us[0], self.us[-1], 100).tolist()
         s_interval = [self.call(u) for u in u_interval]
         s_interval_x, s_interval_y = zip(*s_interval)
         plt.plot(s_interval_x, s_interval_y, 'b-')
