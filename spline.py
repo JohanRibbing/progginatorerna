@@ -9,7 +9,7 @@ class Spline:
         self.ds = ds
 
     #antar att self.us är sorterad stigande och att ds är sorterad för att passa us
-    def plot(self):
+    def plot(self, degree):
         print("us: ", self.us)
 
 
@@ -31,7 +31,21 @@ class Spline:
 
         s_interval = [self(u) for u in u_interval]
         s_interval_x, s_interval_y = zip(*s_interval)
-        plt.plot(s_interval_x, s_interval_y, 'b-')
+
+        subsplines = [self.sub_call(u) for u in u_interval]
+        s0, s1, s2 = zip(*subsplines)
+        s0x, s0y = zip(*s0)
+        s1x, s1y = zip(*s1)
+        s2x, s2y = zip(*s2)
+
+        if degree == 0:
+            plt.plot(s0x, s0y, 'g+')
+        if degree == 1:
+            plt.plot(s1x, s1y, 'y-')
+        if degree == 2:
+            plt.plot(s2x, s2y, 'c-')
+        if degree >= 3:
+            plt.plot(s_interval_x, s_interval_y, 'b-')
 
         plt.show()
     
@@ -44,6 +58,10 @@ class Spline:
     def __call__(self, u):
         index = self.hot_index(u)
         return self.d(3, index, u)
+
+    def sub_call(self, u):
+        index = self.hot_index(u)
+        return [self.d(0, index-2, u), self.d(1, index-1, u), self.d(2, index, u)]
 
     def hot_index(self, u):
         """
