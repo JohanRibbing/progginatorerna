@@ -65,8 +65,10 @@ class Spline:
                 # calculate basis function with recursive algorithm until we reach layer 0.
                 # Expression 1 in the recursive algorithm:
                 first_quota = (u - self.us[j - 1]) / (self.us[j + layer - 1] - self.us[j - 1])
+                b_func1 = self.create_basis_func(j, layer - 1)
 
                 # Expression 2 in the recursive algorithm:
                 second_quota = (self.us[j + layer] - u) / (self.us[j + layer] - self.us[j])
-                return first_quota * self.create_basis_func(j, layer - 1)(u) + second_quota * self.create_basis_func(j + 1, layer - 1)(u)
+                b_func2 = self.create_basis_func(j + 1, layer - 1)
+                return first_quota * b_func1(u) + second_quota * b_func2(u)
             return basis
