@@ -16,21 +16,25 @@ def read_Data(filename):
                 row_count += 1
     return d_s
 
+def create_Knot(d_array):
+    u_len = len(d_array) + 2
+    us = np.linspace(0,1,u_len)
+    us[1] = us[2] = us[0]
+    us[-3] = us[-2] = us[-1]
+    return us
+
+#Setup and read
 ds1 = np.array(read_Data('Data.csv'))
-#us = numpy.linspace(0,1,5)
-#s = Spline(ds,us)
-
+us1 = create_Knot(ds1)
 ds2 = np.genfromtxt("control.csv", dtype=float, delimiter=",")
-us = np.linspace(0, 1, 26)
-us[ 1] = us[ 2] = us[ 0]
-us[-3] = us[-2] = us[-1]
-print(us)
+us2 = create_Knot(ds2)
 
-siv = Spline(us, ds2)
-print(siv(0.2))
-siv.plot()
-#Något som läser in d:na från fil (tar in filnamn som string och returnerar en lista med tuples)
+#Creation of splines
+s1 = Spline(us1, ds1)
+s2 = Spline(us2, ds2)
 
-#Instansierar splinen med listan med tuples
-#kallar på plotfunktionen
-#Seamus
+#Plot splines
+print(s1(0.2))
+s1.plot()
+print(s2(0.2))
+s2.plot()
