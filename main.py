@@ -8,19 +8,16 @@ def read_Data(filename):
     d_s = []
     with open(filename) as csv_file:
         csv_reader = csv.reader(csv_file)
-        line_count = 0
+        row_count = 0
         for row in csv_reader:
-            if line_count == 0:
-               line_count +=1
+            if row_count == 0:
+                row_count += 1
             else:
-                #[x = float(x) for x in row]
-                for i in range(len(row)):
-                    row[i] = float(row[i])
-                d_s.append(tuple(row))
-                line_count +=1
+                d_s.append(tuple(float(x) for x in row))
+                row_count += 1
     return d_s
 
-ds = read_Data('Data.csv')
+ds = numpy.array(read_Data('Data.csv'))
 print(ds)
 #us = numpy.linspace(0,1,5)
 #s = Spline(ds,us)
