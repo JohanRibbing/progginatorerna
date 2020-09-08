@@ -68,7 +68,5 @@ class Spline:
 
                 # Expression 2 in the recursive algorithm:
                 second_quota = (self.us[j + layer] - u) / (self.us[j + layer] - self.us[j])
-                return first_quota * self.create_basis_func(j, layer - 1) + second_quota * self.create_basis_func(j + 1, layer - 1)
+                return first_quota * self.create_basis_func(j, layer - 1)(u) + second_quota * self.create_basis_func(j + 1, layer - 1)(u)
             return basis
-
-
