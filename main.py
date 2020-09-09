@@ -25,20 +25,20 @@ def create_Knot(d_array):
     us[-3] = us[-2] = us[-1]
     return us
 
-#Setup: reads data files and creates lists of Knots
-ds1 = read_Data('Data.csv')
-us1 = create_Knot(ds1)
-ds2 = np.genfromtxt("control.csv", dtype=float, delimiter=",")
-us2 = create_Knot(ds2)
+if __name__ == 'main':
+    #Setup: reads data files and creates lists of Knots
+    ds1 = read_Data('Data.csv')
+    us1 = create_Knot(ds1)
+    ds2 = np.genfromtxt("control.csv", dtype=float, delimiter=",")
+    us2 = create_Knot(ds2)
 
-#Creation of splines
-s1 = Spline(us1, ds1)
-s2 = Spline(us2, ds2)
-print(s2.spline_basis_representation(0.45))
+    #Creation of splines
+    s1 = Spline(us1, ds1)
+    s2 = Spline(us2, ds2)
 
-#Plot of splines
-print(s1(0.2))
-s1.plot(3)
-#print(s2(0.2))
-#s2.plot(3)
+    #Plot of splines
+    #print(s1(0.2))
+    s1.plot(3)
+    #print(s2(0.2))
+    s2.plot(3)
 

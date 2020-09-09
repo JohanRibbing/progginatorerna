@@ -59,6 +59,7 @@ class Spline:
             return self.ds[k]
         elif n >= 1:
             return self.alpha(n, k, u) * self.d(n-1, k-1, u) + (1-self.alpha(n, k, u)) * self.d(n-1, k, u)
+
     #starts recursion to calculate s(u)
     def __call__(self, u):
         index = self.hot_index(u)

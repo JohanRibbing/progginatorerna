@@ -2,11 +2,22 @@ from spline import Spline
 from matplotlib.pyplot import *
 import numpy as np
 
-s = Spline([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], None)
+def create_Knot(d_array):
+    u_len = len(d_array) + 2
+    us = np.linspace(0,1,u_len)
+    us[1] = us[2] = us[0]
+    us[-3] = us[-2] = us[-1]
+    return us
 
-print(np.linspace(0.0, 1.0, 100))
-print([s.create_basis_func(5)(x) for x in np.linspace(0.0, 1.0, 100)])
-for i in [1, 2, 3, 4, 5, 6, 7]:
-    plot(np.array(np.linspace(0.0, 1.0, 100)), np.array([s.create_basis_func(i)(x) for x in np.linspace(0.0, 1.0, 100)]))
+ds2 = np.genfromtxt("control.csv", dtype=float, delimiter=",")
+us2 = create_Knot(ds2)
+
+s2 = Spline(us2, ds2)
+
+xys = [s2.spline_basis_representation(z) for z in np.linspace(0.05, 0.95, 100)]
+
+xs, ys = zip(*xys)
+
+scatter(xs, ys)
 
 show()
