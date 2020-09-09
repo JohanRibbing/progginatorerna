@@ -3,14 +3,15 @@ import numpy as np
 
 class Spline:
     
-    #ds assumed to be list of ndarrays
     def __init__(self, us, ds):
         self.us = us
         self.ds = ds
 
-    #antar att self.us är sorterad stigande och att ds är sorterad för att passa us
     def plot(self, degree):
-
+        """
+        Plots blossoms of order degree.
+        param degree: order of blossoms to plot
+        """
         #only plot where spline is defined
         us_no_extra = self.us[2:-2]
         u_interval = np.linspace(us_no_extra[0], us_no_extra[-1], 1000).tolist()
@@ -50,17 +51,27 @@ class Spline:
 
         plt.show()
     
-    #recursive definition of blossoms, with alternative notation
-    #n = degree of blossom, n=0 gives a control point, n=3 gives s(u)
-    #k = index of leftmost knot point of this blossom
-    #u = parameter value to evaluate spline blossom at
     def d(self, n, k, u):
+        """
+        recursive definition of blossoms, with alternative notation
+        param: n = degree of blossom, n=0 gives a control point, n=3 gives s(u)
+        param: k = index of leftmost knot point of this blossom
+        param: u = parameter value to evaluate spline blossom at
+        return: blossom value
+        """
+
         if n == 0:
             return self.ds[k]
         elif n >= 1:
             return self.alpha(n, k, u) * self.d(n-1, k-1, u) + (1-self.alpha(n, k, u)) * self.d(n-1, k, u)
-    #starts recursion to calculate s(u)
+
     def __call__(self, u):
+        """
+        starts recursion to calculate s(u)
+        param u: parameter value to évaluate spline at
+        return: value of spline at u, s(u)
+        """
+
         index = self.hot_index(u)
         return self.d(3, index, u)
     
@@ -79,7 +90,6 @@ class Spline:
                 return i
         return len(self.us) - 3
 
-    #Returns the value of alpha for a given
     def alpha(self, n, k, u):
         """
         :param n: distance from bottom layer in Blossom
