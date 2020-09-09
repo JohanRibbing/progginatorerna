@@ -79,7 +79,14 @@ class Spline:
                 return i
         return len(self.us) - 3
 
+    #Returns the value of alpha for a given
     def alpha(self, n, k, u):
+        """
+        :param n: distance from bottom layer in Blossom
+        :param k: index for Knot point
+        :param u: position in spline
+        :return: value of alpha for a given layer and position in recursive Blossom algorithm
+        """
         u_leftmost = self.us[k-1]
         u_rightmost = self.us[k+3-n]
         return ((u_rightmost-u)/(u_rightmost-u_leftmost))
