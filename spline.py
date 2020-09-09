@@ -10,58 +10,63 @@ class Spline:
 
     #antar att self.us är sorterad stigande och att ds är sorterad för att passa us
     def plot(self, degree):
-        print("us: ", self.us)
 
-
+        #only plot where spline is defined
         us_no_extra = self.us[2:-2]
-        print("us_no_extra: ", us_no_extra)
+        u_interval = np.linspace(us_no_extra[0], us_no_extra[-1], 1000).tolist()
 
-
-        u_interval = np.linspace(us_no_extra[0], us_no_extra[-1], 100).tolist()
-        print("u_interval: ", u_interval)
-
-
+        #plot control polygon
         dx, dy = zip(*self.ds)
         plt.plot(dx, dy, 'r--')
         plt.plot(dx, dy, 'ro')
 
+        #plot knot points
         ss = [self(u) for u in us_no_extra]
         ssx, ssy = zip(*ss)
         plt.plot(ssx, ssy, 'b+')
-
+        
+        #plot spline between knots
         s_interval = [self(u) for u in u_interval]
         s_interval_x, s_interval_y = zip(*s_interval)
 
+        #create lower orders of blossoms
         subsplines = [self.sub_call(u) for u in u_interval]
+
+        #unpack list of n 3-tuples of 2-tuples into 6 n-tuples to match with plt.plot()
         s0, s1, s2 = zip(*subsplines)
         s0x, s0y = zip(*s0)
         s1x, s1y = zip(*s1)
         s2x, s2y = zip(*s2)
 
+        #plot blossoms of correct degree, degree 3 = s(u)
         if degree == 0:
             plt.plot(s0x, s0y, 'g+')
-        if degree == 1:
+        elif degree == 1:
             plt.plot(s1x, s1y, 'y-')
-        if degree == 2:
+        elif degree == 2:
             plt.plot(s2x, s2y, 'c-')
-        if degree >= 3:
+        elif degree >= 3:
             plt.plot(s_interval_x, s_interval_y, 'b-')
 
         plt.show()
     
+    #recursive definition of blossoms, with alternative notation
+    #n = degree of blossom, n=0 gives a control point, n=3 gives s(u)
+    #k = index of leftmost knot point of this blossom
+    #u = parameter value to evaluate spline blossom at
     def d(self, n, k, u):
         if n == 0:
             return self.ds[k]
         elif n >= 1:
             return self.alpha(n, k, u) * self.d(n-1, k-1, u) + (1-self.alpha(n, k, u)) * self.d(n-1, k, u)
-
+    #starts recursion to calculate s(u)
     def __call__(self, u):
         index = self.hot_index(u)
         return self.d(3, index, u)
-
+    
     def sub_call(self, u):
         index = self.hot_index(u)
-        return [self.d(0, index-2, u), self.d(1, index-1, u), self.d(2, index, u)]
+        return (self.d(0, index-2, u), self.d(1, index-1, u), self.d(2, index, u))
 
     def hot_index(self, u):
         """
@@ -105,4 +110,4 @@ class Spline:
                 second_quota = (self.us[j + layer] - u) / (self.us[j + layer] - self.us[j])
                 b_func2 = self.create_basis_func(j + 1, layer - 1)
                 return first_quota * b_func1(u) + second_quota * b_func2(u)
-            return basis
+        return basis
