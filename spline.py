@@ -101,7 +101,7 @@ class Spline:
         """
         if layer == 0:
             def basis(u):
-                if self.us[j - 1] <= u < self.us[j]:
+                if self.get_u_by_index(j - 1) <= u < self.get_u_by_index(j):
                     return 1
                 else:
                     return 0
@@ -110,11 +110,42 @@ class Spline:
             def basis(u):
                 # calculate basis function with recursive algorithm until we reach layer 0.
                 # Expression 1 in the recursive algorithm:
-                first_quota = (u - self.us[j - 1]) / (self.us[j + layer - 1] - self.us[j - 1])
+                first_quota = 0 if (self.get_u_by_index(j + layer - 1) - self.get_u_by_index(j - 1)) == 0 else (u - self.get_u_by_index(j - 1)) / (self.get_u_by_index(j + layer - 1) - self.get_u_by_index(j - 1))
                 b_func1 = self.create_basis_func(j, layer - 1)
 
                 # Expression 2 in the recursive algorithm:
-                second_quota = (self.us[j + layer] - u) / (self.us[j + layer] - self.us[j])
+                second_quota = 0 if (self.get_u_by_index(j + layer) - self.get_u_by_index(j)) == 0 else (self.get_u_by_index(j + layer) - u) / (self.get_u_by_index(j + layer) - self.get_u_by_index(j))
                 b_func2 = self.create_basis_func(j + 1, layer - 1)
                 return first_quota * b_func1(u) + second_quota * b_func2(u)
         return basis
+
+    def get_u_by_index(self, j):
+        """
+        Wrapper so that when you try to call for u outside of range, another is returned.
+        :param j: The index of the u wanted.
+        :return: gridpoint
+        """
+        if j < 0:
+            return self.us[0]
+        elif j > len(self.us) - 1:
+            return self.us[len(self.us) - 1]
+        else:
+            return self.us[j]
+
+    def spline_basis_representation(self, u):
+        """
+        Used to calculate the spline value using a linear combination of the basis functions along with the
+        control points.
+        :param u: The point in which to evaluate the value of the spline.
+        :return: The spline value, s(u).
+        """
+        # su is our output vector, s(u).
+        su = np.array([0, 0])
+
+        for j, d in enumerate(self.ds):
+            # for each d, add a sum of d * N_j (u) to the su array.
+            basis_func = self.create_basis_func(j)
+
+            su = su + d * basis_func(u)
+
+        return su
