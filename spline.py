@@ -1,17 +1,41 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
+import scipy
 class Spline:
     
-    def __init__(self, us, ds=None, interpolation_points=None):
+    def __init__(self, us=None, ds=None, interpolation_points=None):
+        self.interpolation_points = interpolation_points
+        if us is not None and ds is not None:
+            self.us = us
+            self.ds = ds
+            print(len(us), len(ds))
+        elif interpolation_points is not None:
+            self.ds = self.get_control_points(interpolation_points)
+            self.us[1] = self.us[2] = self.us[0]
+            self.us[-3] = self.us[-2] = self.us[-1]
+        else:
+            pass
+
+    def get_control_points(self, interpolation_points):
+        L = len(interpolation_points)-1
+        us = np.linspace(0,1,L+3)
+        
         self.us = us
 
-        if ds == None:
-            self.ds = self.get_control_points(interpolation_points)
-        else:
-            self.ds = ds
-    def get_control_points(interpolation_points):
-        grevilles = [(self.us[i] + self[i+1] + self[i+2]) / 3 for u in self.us[2:-2]]
+        grevilles = [(self.us[i] + self.us[i+1] + self.us[i+2]) / 3 for i in range(L+1)]
+        basis_func = [self.create_basis_func(j) for j in range(L+1)]
+        vandermonde = np.array([[basis_func[col](grevilles[row]) for col in range(L+1)] for row in range(L+1)])
+
+        plt.spy(vandermonde)
+        plt.show()
+        xs, ys = zip(*interpolation_points)
+        
+        dxs = np.linalg.solve(vandermonde, xs)
+        dys = np.linalg.solve(vandermonde, ys)
+        ds = np.array(list(zip(dxs, dys)))
+
+        return ds
+
     def plot(self, degree):
         """
         Plots blossoms of order degree.
@@ -25,6 +49,11 @@ class Spline:
         dx, dy = zip(*self.ds)
         plt.plot(dx, dy, 'r--')
         plt.plot(dx, dy, 'ro')
+
+        #plot interp points
+        if self.interpolation_points is not None:
+            interp_x, interp_y = zip(*self.interpolation_points)
+            plt.plot(interp_x, interp_y, 'yo')
 
         #plot knot points
         ss = [self(u) for u in us_no_extra]
