@@ -3,10 +3,15 @@ import numpy as np
 
 class Spline:
     
-    def __init__(self, us, ds):
+    def __init__(self, us, ds=None, interpolation_points=None):
         self.us = us
-        self.ds = ds
 
+        if ds == None:
+            self.ds = self.get_control_points(interpolation_points)
+        else:
+            self.ds = ds
+    def get_control_points(interpolation_points):
+        grevilles = [(self.us[i] + self[i+1] + self[i+2]) / 3 for u in self.us[2:-2]]
     def plot(self, degree):
         """
         Plots blossoms of order degree.
