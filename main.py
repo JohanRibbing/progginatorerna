@@ -32,9 +32,10 @@ us2 = create_Knot(ds2)
 #Creation of splines
 s1 = Spline(us1, ds1)
 s2 = Spline(us2, ds2)
+print(s2.spline_basis_representation(0.45))
 
 #Plot splines
-print(s1(0.2))
+# print(s1(0.2))
 s1.plot()
-print(s2(0.2))
+# print(s2(0.2))
 s2.plot()
