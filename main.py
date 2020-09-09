@@ -35,8 +35,8 @@ ds2 = np.genfromtxt("control.csv", dtype=float, delimiter=",")
 us2 = create_Knot(ds2)
 
 
-#s1 = Spline(us=us1, ds=ds1)
-s1 = Spline(interpolation_points=ds1)
+s1 = Spline(us=us1, ds=ds1)
+# s1 = Spline(interpolation_points=ds1)
 s1.plot(3)
 """
 #Creation of splines
