@@ -1,11 +1,47 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
+import scipy
 class Spline:
     
-    def __init__(self, us, ds):
+    def __init__(self, us=None, ds=None, interpolation_points=None):
+        """
+        Init either takes us and ds, or it takes interpolation points that you want the curve to pass.
+        :param us: Knot points. K + 1
+        :param ds: Control points. K - 1
+        :param interpolation_points: The points to pass.
+        """
+        self.interpolation_points = interpolation_points
+        if us is not None and ds is not None:
+            self.us = us
+            self.ds = ds
+        elif interpolation_points is not None:
+            self.ds = self.get_control_points(interpolation_points)
+        else:
+            pass
+
+    def get_control_points(self, interpolation_points):
+        """
+        :param interpolation_points: Points to pass through.
+        :return: The control points that give the correct curve.
+        """
+        L = len(interpolation_points)-1
+        us = np.linspace(0, 1, L+3)
+        us[1] = us[2] = us[0]
+        us[-3] = us[-2] = us[-1]
         self.us = us
-        self.ds = ds
+
+        # Calc de Boor points, basis functions and with those compute vandermonde matrix.
+        grevilles = [(self.us[i] + self.us[i+1] + self.us[i+2]) / 3 for i in range(L+1)]
+        basis_func = [self.create_basis_func(j) for j in range(L+1)]
+        vandermonde = np.array([[basis_func[col](grevilles[row]) for col in range(L+1)] for row in range(L+1)])
+
+        xs, ys = zip(*interpolation_points)
+        
+        dxs = np.linalg.solve(vandermonde, xs)
+        dys = np.linalg.solve(vandermonde, ys)
+        ds = np.array(list(zip(dxs, dys)))
+
+        return ds
 
     def plot(self, degree):
         """
@@ -20,6 +56,11 @@ class Spline:
         dx, dy = zip(*self.ds)
         plt.plot(dx, dy, 'r--')
         plt.plot(dx, dy, 'ro')
+
+        #plot interp points
+        if self.interpolation_points is not None:
+            interp_x, interp_y = zip(*self.interpolation_points)
+            plt.plot(interp_x, interp_y, 'yo')
 
         #plot knot points
         ss = [self(u) for u in us_no_extra]
@@ -114,6 +155,10 @@ class Spline:
             def basis(u):
                 if self.get_u_by_index(j - 1) <= u < self.get_u_by_index(j):
                     return 1
+                # Bad solution to end point issue. Prevents singular vandermonde matrix. Otherwise last row
+                # of matrix is empty, giving a singular matrix without solutions.
+                elif self.get_u_by_index(j) == 1 and u == 1:
+                    return 1
                 else:
                     return 0
             return basis
@@ -132,7 +177,7 @@ class Spline:
 
     def get_u_by_index(self, j):
         """
-        Wrapper so that when you try to call for u outside of range, another is returned.
+        Wrapper so that when you try to call for gridpoint outside of range, another gridpoint is returned.
         :param j: The index of the u wanted.
         :return: gridpoint
         """
